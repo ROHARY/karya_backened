@@ -6,7 +6,7 @@ exports.connect = async function connect(){
   try{
     return await mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true, dbName: DB_NAME  })
   }catch(err){
-    console.error('Error connecting to mongodb', )
+    console.error('Error connecting to mongodb..', )
     return null
   }
 }

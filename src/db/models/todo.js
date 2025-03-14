@@ -9,8 +9,9 @@ const TodoSchema = new mongoose.Schema({
   },
   status: {
     type: String,
+    default: 'notStarted',
     enum: {
-      values: ['not_started', 'in_progress', 'completed'],
+      values: ['notStarted', 'inprogress', 'completed'],
       message: '{VALUE} is not a valid role.'
     },
   }
