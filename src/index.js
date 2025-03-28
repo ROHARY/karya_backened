@@ -10,19 +10,17 @@ const db = require('./db')
 const app = express()
 const PORT = process.env.PORT
 const corsOptions = {
-    origin: ['http://localhost:3334', 'https://localhost:3334'], // Replace with the origin you want to allow
-    credentials: true
+    origin: ['http://localhost:3334','http://127.0.0.1:3334', 'https://localhost:3334'], // Replace with the origin you want to allow
   };
-
-
+if(process.env.NODE_ENV == 'production') corsOptions['credentials'] = true
 
 // Read the certificates you generated
 const options = {
     key: fs.readFileSync('./localhost-key.pem'),
     cert: fs.readFileSync('./localhost.pem'),
   };
-app.use(authenticate)
 app.use(cors(corsOptions));
+app.use(authenticate)
 app.use(cookieParser())
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
@@ -31,14 +29,14 @@ app.use('/',routes)
 db.connect().then((conn)=>{
     console.log('db successfully connected !!!')
     global.models = require('./db/models')
-    if(process.env.NODE_ENV == 'development'){
-        app.listen(PORT, ()=>{
-            console.log(`App Listening on port ${PORT}`)
-        })
-    }else{
+    if(process.env.NODE_ENV == 'production'){
         https.createServer(options, app).listen(PORT, () => {
             console.log(`Backend running on https://localhost:${PORT}`);
           });
+    }else{
+        app.listen(PORT, ()=>{
+            console.log(`App Listening on port ${PORT}`)
+        })
     }
 }).catch((err)=>{
     console.log('Something went worng while starting the server', err)
