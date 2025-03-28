@@ -31,13 +31,15 @@ app.use('/',routes)
 db.connect().then((conn)=>{
     console.log('db successfully connected !!!')
     global.models = require('./db/models')
-
-    https.createServer(options, app).listen(PORT, () => {
-        console.log(`Backend running on https://localhost:${PORT}`);
-      });
-    // app.listen(PORT, ()=>{
-    //     console.log(`App Listening on port ${PORT}`)
-    // })
+    if(process.env.NODE_ENV == 'development'){
+        app.listen(PORT, ()=>{
+            console.log(`App Listening on port ${PORT}`)
+        })
+    }else{
+        https.createServer(options, app).listen(PORT, () => {
+            console.log(`Backend running on https://localhost:${PORT}`);
+          });
+    }
 }).catch((err)=>{
     console.log('Something went worng while starting the server', err)
 })
